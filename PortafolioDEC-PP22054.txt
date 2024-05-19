@@ -1,0 +1,192 @@
+***************** RESTA DE TRES ENTEROS - 16 BITS *****************
+; PROGRAMA EN ENSAMBLADOR QUE RESTA TRES NÚMEROS ENTEROS - 16 BITS
+
+; Para declarar variables definidas.
+section .data 
+    x dw 90          ; Declaramos un entero de 32 bits para 'x' y lo inicializamos en 90.
+    y dw 50          ; Declaramos un entero de 32 bits para 'y' y lo inicializamos en 50.
+    z dw 30          ; Declaramos un entero de 32 bits para 'x' y lo inicializamos en 30.
+    mensaje db "La resta de x-y-z es: "
+    longitud equ $ - mensaje
+
+; Para variables no inicializadas.
+section .bss 
+    resultado resw 5 ; Variable para almacenar el resultado (hasta 5 dígitos)
+
+; Segmento para definir el código
+section .text 
+
+    ; Para iniciar el segmento de código.
+    global _start
+
+; Para iniciar la rutina.
+_start:
+
+    ; AX almacena números bajos.
+    ; AH almacena el residuo de una división.
+    
+    mov ax, [x]     ; Movemos a AX el primer valor.
+    sub ax, [y]     ; Restamos el segundo valor de AX.
+    sub ax, [z]     ; Restamos el tercer valor de AX.
+    
+    mov dx, 0       ; Limpiamos DX dejándolo con un valor de cero.
+    mov bx, 10      ; Movemos al registro BX 10, que es el valor en el que queremos dividir.
+    div bx          ; Dividimos AX entre BX.
+    
+    ; Convertimos los valores a ASCII marcando cero como caracteres.
+    add ax, '0' 
+    add dx, '0'
+    
+    ; Movemos los registros a memoria en la variable resultado reservada con dos dígitos.
+    mov [resultado], ax         ; Primera posición de memoria el primer dígito.
+    mov [resultado + 1] , dx    ; Segunda posición de memoria el segundo dígito.
+    
+    ; Escribo en pantalla el mensaje.
+    mov     eax, 4              ; sys_write().
+    mov     ebx, 1              ; Escribir en pantalla.
+    mov     ecx, mensaje        ; muevo al registro ecx la dirección de memoria donde esta mensaje.
+    mov     edx, longitud       ; imprime las posiciones de caracteres.
+    int     0x80                ; interrumpimos el programa.
+    
+    ; Escribimos en pantalla.
+    mov eax, 4                  ; sys_write().
+    mov ebx, 1                  ; Escribir en pantalla.
+    mov ecx, resultado          ; Movemos al registro ECX la dirección de memoria donde está resultado.
+    mov edx, 2                  ; Imprimimos las posiciones de caracteres.
+    int 0x80                    ; Para interrumpir la ejecución del programa.
+    
+    ; Salimos del sistema
+    mov eax, 1                  ; sys_exit().
+    mov ebx, 0                  ; Salir sin errores.
+    int 0x80                    ; Para interrumpir la ejecución del programa.
+    
+    
+***************** MULTIPLICACIÓN DE DOS NÚMEROS ENTEROS - 8 BITS *****************
+; PROGRAMA EN ENSAMBLADOR QUE MULTIPLICA DOS NÚMEROS ENTEROS - 8 BITS
+
+; Para declarar variables definidas.
+section .data
+    x db 2                  ; Declaramos un entero de 8 bits para 'x' y lo inicializamos en 2.
+    y db 10                 ; Declaramos un entero de 8 bits para 'y' y lo inicializamos en 10.
+    mensaje db "El resultado de multiplicar (x)(y) es: "
+    longitud equ $ - mensaje         
+
+; Para variables no inicializadas
+section .bss
+    resultado resb 2        ; Variable para almacenar el resultado (hasta 2 dígitos).
+
+; Segmento para definir el código
+section .text
+    global _start 
+
+; Segmento para iniciar el código
+_start:
+    ; Cargar los números en registros
+    mov al, [x]             ; Cargar x en AL (8 bits)
+    mov bl, [y]             ; Cargar y en BL (8 bits)
+
+    ; Multiplicar los números
+    mul bl                  ; Multiplicar AL por BL, el resultado se almacena en AX.
+    
+    ; Preparamos y ejecutamos de la División
+    mov bx, 10              ; Cargamos el número 10 en el registro BX para usarlo como divisor.    
+    xor dx, dx              ; Ponemos el registro DX a cero. Necesario antes de la división.    
+    ; xor realiza una operación bit a bit entre los valores en el registro "dx" y él mismo.
+    ; es una forma eficiente de poner el registro "dx" a cero.
+    div bx                  ; Dividimos AX por BX. El resultado (cociente) se almacena en AL y el residuo en AH.       
+
+    ;Convertimos a ASCII
+    add al, '0'             ; Convertimos el número en AL a su representación ASCII.
+    mov [resultado], al     ; Almacenamos el primer dígito del resultado en la variable 'resultado'.   
+    add ah, '0'             ; Convertimos el número en AH a su representación ASCII   
+    mov [resultado + 1], ah    ; Almacenar el segundo dígito del resultado en la variable 'resultado'.
+
+    ; Escribir el mensaje en pantalla
+    mov eax, 4              ; Código de syscall para sys_write.
+    mov ebx, 1              ; Descriptor de archivo 1 - stdout.
+    mov ecx, mensaje        ; Dirección del mensaje.
+    mov edx, longitud       ; Longitud del mensaje.
+    int 0x80                ; Para interrumpir la ejecución del programa.
+
+    ; Escribir el resultado en pantalla.
+    mov eax, 4              ; Código de syscall para sys_write.
+    mov ebx, 1              ; Descriptor de archivo 1 - stdout.
+    mov ecx, resultado      ; Dirección del resultado.
+    mov edx, 2              ; Longitud del resultado (2 bytes).
+    int 0x80                ; Para interrumpir la ejecución del programa.
+
+    ; Salir del programa
+    mov eax, 1              ; Código de syscall para exit.
+    xor ebx, ebx            ; Código de salida.
+    int 0x80                ; Para interrumpir la ejecución del programa.
+
+
+***************** DIVISION DE DOS NUMEROS ENTEROS *****************
+; PROGRAMA EN ENSAMBLADOR QUE DIVIDE DOS NÚMEROS ENTEROS - 32 BITS
+
+; Para declarar variables definidas
+section .data
+    x dd 20                                 ; Declaramos un entero de 32 bits para 'x' y lo inicializamos en 20.
+    y dd 2                                  ; Declaramos un entero de 32 bits para 'y' y lo inicializamos en 2.
+    mensaje db "La división de x/y es: "    ; Declaramos una cadena de caracteres para 'mensaje'.
+    longitud equ $ - mensaje                ; Calcula la longitud de la cadena 'mensaje'.
+
+; Para variables no inicializadas
+section .bss
+    division resb 11                        ; Reservamos 11 bytes para la variable 'division'.
+
+; Segmento para definir el código
+section .text
+    global _start                           ; Punto de entrada del programa.
+
+; Segmento para iniciar el código
+_start:
+    mov eax, [x]                            ; Cargamos el valor de 'x' en el registro EAX.
+    xor edx, edx                            ; Limpiamos el registro EDX para usarlo en la división.
+    idiv dword [y]                          ; idiv: Dividimos el valor en EAX por el valor de 'y', 
+                                            ; con el operador dword (double word) tratamos el valor en la 
+                                            ; ubicación de memoria [y] como un entero de 32 bits.
+                                            
+    mov [division], eax                     ; Almacenamos el resultado de la división en 'division'.
+
+    ; Convierte el resultado a ASCII
+    mov ecx, 10                             ; Establecemos el divisor 10 para la conversión a ASCII.
+    mov edi, division + 10                  ; Calculamos y apuntamos o direccionamos a la última posición 
+                                            ; del buffer 'division' que resulta de sumar 10
+                                            ; moviendo este resultado al registro edi.
+                                            
+    mov byte [edi], 0                       ; Coloca un carácter nulo al final del buffer
+    .loop:
+        xor edx, edx                        ; Limpia EDX para usarlo en la división,
+                                            ; xor realiza una operación bit a bit entre los valores en el registro EDX y él mismo,
+                                            ; es una forma eficiente de poner el registro EDX a cero.
+                                            
+        idiv ecx                            ; Divide el valor en EAX por 10.
+        add dl, '0'                         ; Convierte el resto de la división a ASCII.
+        dec edi                             ; Mueve el puntero una posición hacia atrás en el buffer.
+        mov [edi], dl                       ; Almacena el carácter ASCII en el buffer.
+        test eax, eax                       ; Comprueba si el cociente de la división es cero.
+    jnz .loop                               ; Si el cociente no es cero, repite el bucle.
+
+    ; Escribe el mensaje en la salida estándar
+    mov eax, 4                              ; sys_write().
+    mov ebx, 1                              ; stdout.
+    mov ecx, mensaje                        ; Dirección del mensaje.
+    mov edx, longitud                       ; Longitud del mensaje.
+    int 0x80                                ; Llama al sistema operativo.
+
+    ; Escribe el resultado de la división en la salida estándar
+    mov eax, 4                              ; sys_write().
+    mov ebx, 1                              ; stdout.
+    mov ecx, edi                            ; Dirección del inicio de la cadena de caracteres.
+    sub edx, edi                            ; Calcula la longitud de la cadena de caracteres.
+    neg edx                                 ; Convierte la longitud a un valor positivo.
+    int 0x80                                ; Para interrumpir la ejecución del programa.
+
+    ; Termina el programa
+    mov eax, 1                              ; sys_exit().
+    int 0x80                                ; Para interrumpir la ejecución del programa.
+
+
+
+
