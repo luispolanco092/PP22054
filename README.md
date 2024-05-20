@@ -3,12 +3,13 @@
 ## Facultad Multidisciplinaria De Occidente
 ## Ingeniería En Desarrollo De Software
 
-### Elaboración de programas en ensamblador.
-1. Resta de tres enteros
-   Se escribe un programa para restar tres números enteros, usando registros de 16 bits.
+### Elaboración de programas en ensamblador:
 
-3. Multiplicación
-   Se escribe un programa para multiplicar dos números enteros, usando registros de 8 bits.
+#### Resta de tres enteros
+Se escribe un programa para restar tres números enteros, usando registros de 16 bits.
 
-4. División
-   Escriba un programa para dividir dos números enteros, usando registros de 32 bits.
+#### Multiplicación
+Se escribe un programa para multiplicar dos números enteros, usando registros de 8 bits.
+
+#### División
+Escriba un programa para dividir dos números enteros, usando registros de 32 bits.
